@@ -1,37 +1,39 @@
-import { env } from "./infra/env";
-import { FastifyAdapter } from "./infra/http/fastify/fastify-adapter";
-import type { HttpServer } from "./infra/http/http-server";
-import { AuthRoutes } from "./infra/http/routes/auth/routes";
-import { CategoryRoutes } from "./infra/http/routes/category/routes";
-import { ProjectRoutes } from "./infra/http/routes/project/routes";
-import { UserRoutes } from "./infra/http/routes/user/routes";
+import { env } from './infra/env'
+import { FastifyAdapter } from './infra/http/fastify/fastify-adapter'
+import type { HttpServer } from './infra/http/http-server'
+import { AuthRoutes } from './infra/http/routes/auth/routes'
+import { CategoryRoutes } from './infra/http/routes/category/routes'
+import { ProjectRoutes } from './infra/http/routes/project/routes'
+import { TagRoutes } from './infra/http/routes/tag/routes'
+import { UserRoutes } from './infra/http/routes/user/routes'
 
 export default class App {
-  private httpServer: HttpServer;
+  private httpServer: HttpServer
   constructor() {
-    this.httpServer = new FastifyAdapter();
+    this.httpServer = new FastifyAdapter()
   }
 
   async start() {
-    await new UserRoutes(this.httpServer).init();
-    await new AuthRoutes(this.httpServer).init();
-    await new CategoryRoutes(this.httpServer).init();
-    await new ProjectRoutes(this.httpServer).init();
+    await new UserRoutes(this.httpServer).init()
+    await new AuthRoutes(this.httpServer).init()
+    await new CategoryRoutes(this.httpServer).init()
+    await new ProjectRoutes(this.httpServer).init()
+    await new TagRoutes(this.httpServer).init()
 
     this.httpServer.start(env.PORT, () => {
-      console.log("HTTP Running!");
-    });
+      console.log('HTTP Running!')
+    })
   }
 
   async close() {
-    this.httpServer.close();
+    this.httpServer.close()
   }
 
   get instance() {
-    return this.httpServer.app;
+    return this.httpServer.app
   }
 }
 
-export const app = new App();
+export const app = new App()
 
-app.start();
+app.start()

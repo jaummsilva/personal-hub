@@ -16,6 +16,7 @@ model User {
   updatedAt    DateTime   @updatedAt @map("updated_at")
   categories   Category[]
   projects     Project[]
+  tags         Tag[]
 
   @@index([name], name: "index_name")
   @@index([cpf])
@@ -47,4 +48,15 @@ model Project {
   user User @relation(fields: [userId], references: [id])
 
   @@map("projects")
+}
+
+model Tag {
+  id     String @id @default(uuid())
+  name   String
+  color  String
+  userId String @map("user_id")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("tags")
 }
