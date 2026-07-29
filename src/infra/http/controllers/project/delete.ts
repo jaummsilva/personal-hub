@@ -1,39 +1,31 @@
-import { z } from 'zod'
+import { z } from "zod";
 
 import type { Validation } from "@/core/validation/validation";
+import { ProjectNotExistsError } from "@/domain/application/errors/project/project-not-exists";
 import type { HttpResponse } from "@/infra/http/http-response";
 
 import type { HttpRequest } from "../../http-request";
-import { makeRegisterCategoriesUseCase } from "./factories/make-register-categories-use-case";
-import { UserNotExistsError } from "@/domain/application/errors/user/user-not-exists";
+import { makeDeleteProjectUseCase } from "./factories/make-delete-project";
 
-export class RegisterCategoryController {
+export class DeleteProjectController {
   constructor(
     private bodyValidation: Validation<{
-      name: string;
-      icon: string;
-      color: string;
-      userId: string;
+      projectId: string;
     }>,
   ) {}
 
   async handle(request: HttpRequest, reply: HttpResponse) {
     try {
-      const { name, color, icon, userId } = this.bodyValidation.parse(
-        request.body,
-      );
+      const { projectId } = this.bodyValidation.parse(request.params);
 
-      const registerCategoriesUseCase = makeRegisterCategoriesUseCase();
+      const deleteProjectUseCase = makeDeleteProjectUseCase();
 
-      const result = await registerCategoriesUseCase.execute({
-        name,
-        userId,
-        icon,
-        color,
+      const result = await deleteProjectUseCase.execute({
+        projectId,
       });
 
       if (result.isLeft()) {
-        const errorMapping = new Map([[UserNotExistsError, 404]]);
+        const errorMapping = new Map([[ProjectNotExistsError, 404]]);
 
         for (const [ErrorClass, statusCode] of errorMapping) {
           if (result.value instanceof ErrorClass) {
@@ -44,7 +36,7 @@ export class RegisterCategoryController {
         }
       }
 
-      return reply.status(201).send();
+      return reply.status(204).send();
     } catch (error) {
       if (error instanceof z.ZodError) {
         const errorMessages = error.errors.map((err) => err.message);

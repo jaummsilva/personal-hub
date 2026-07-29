@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 import type { Validation } from "@/core/validation/validation";
-import { CategoryAlreadyExistsForCodeError } from "@/domain/application/errors/category/category-already-exists-for-code";
 import { CategoryNotExistsError } from "@/domain/application/errors/category/category-not-exists";
 import type { HttpResponse } from "@/infra/http/http-response";
 
@@ -38,7 +37,6 @@ export class UpdateCategoryController {
       if (result.isLeft()) {
         const errorMapping = new Map([
           [CategoryNotExistsError, 404],
-          [CategoryAlreadyExistsForCodeError, 409],
           [UserNotExistsError, 404],
         ]);
 

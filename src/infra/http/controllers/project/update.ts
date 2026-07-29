@@ -1,39 +1,46 @@
-import { z } from 'zod'
+import { z } from "zod";
 
 import type { Validation } from "@/core/validation/validation";
 import type { HttpResponse } from "@/infra/http/http-response";
 
 import type { HttpRequest } from "../../http-request";
-import { makeRegisterCategoriesUseCase } from "./factories/make-register-categories-use-case";
+import { makeUpdateProjectUseCase } from "./factories/make-update-use-case";
 import { UserNotExistsError } from "@/domain/application/errors/user/user-not-exists";
+import { ProjectNotExistsError } from "@/domain/application/errors/project/project-not-exists";
 
-export class RegisterCategoryController {
+export class UpdateProjectController {
   constructor(
     private bodyValidation: Validation<{
+      projectId: string;
       name: string;
       icon: string;
       color: string;
       userId: string;
+      description: string;
     }>,
   ) {}
 
   async handle(request: HttpRequest, reply: HttpResponse) {
     try {
-      const { name, color, icon, userId } = this.bodyValidation.parse(
-        request.body,
-      );
+      const { name, projectId, color, icon, userId, description } =
+        this.bodyValidation.parse(request.body);
 
-      const registerCategoriesUseCase = makeRegisterCategoriesUseCase();
+      const updateProjectUseCase = makeUpdateProjectUseCase();
 
-      const result = await registerCategoriesUseCase.execute({
+      const result = await updateProjectUseCase.execute({
+        projectId,
         name,
         userId,
         icon,
         color,
+        description
       });
 
       if (result.isLeft()) {
-        const errorMapping = new Map([[UserNotExistsError, 404]]);
+        const errorMapping = new Map([
+          [ProjectNotExistsError, 404],
+          [UserNotExistsError, 404],
+        ]);
 
         for (const [ErrorClass, statusCode] of errorMapping) {
           if (result.value instanceof ErrorClass) {
@@ -44,7 +51,7 @@ export class RegisterCategoryController {
         }
       }
 
-      return reply.status(201).send();
+      return reply.status(204).send();
     } catch (error) {
       if (error instanceof z.ZodError) {
         const errorMessages = error.errors.map((err) => err.message);

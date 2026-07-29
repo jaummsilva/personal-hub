@@ -1,7 +1,6 @@
 import { type Either, left, right } from "@/core/either";
 import { Category } from "@/domain/enterprise/category";
 
-import { CategoryAlreadyExistsForCodeError } from "../../errors/category/category-already-exists-for-code";
 import { CategoryNotExistsError } from "../../errors/category/category-not-exists";
 import type { CategoriesRepository } from "../../repositories/categories-repository";
 import type { UsersRepository } from "../../repositories/users-repository";
@@ -17,7 +16,7 @@ interface UpdateCategoryUseCaseRequest {
 }
 
 type UpdateCategoryUseCaseResponse = Either<
-  CategoryNotExistsError | CategoryAlreadyExistsForCodeError,
+  CategoryNotExistsError,
   { category: Category }
 >;
 

@@ -15,6 +15,7 @@ model User {
   createdAt    DateTime   @default(now()) @map("created_at")
   updatedAt    DateTime   @updatedAt @map("updated_at")
   categories   Category[]
+  projects     Project[]
 
   @@index([name], name: "index_name")
   @@index([cpf])
@@ -31,4 +32,19 @@ model Category {
   user User @relation(fields: [userId], references: [id])
 
   @@map("categories")
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  name        String
+  userId      String   @map("user_id")
+  description String
+  color       String
+  icon        String
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("projects")
 }

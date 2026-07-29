@@ -1,9 +1,9 @@
-import { z } from 'zod'
+import { z } from "zod";
 
-import type { Validation } from '@/core/validation/validation'
+import type { Validation } from "@/core/validation/validation";
 
 // Defina o esquema de validação
-const fetchCategoriesQuerySchema = z.object({
+const fetchProjectsQuerySchema = z.object({
   query: z
     .string({
       invalid_type_error: "Query inválida",
@@ -29,15 +29,13 @@ const fetchCategoriesQuerySchema = z.object({
 });
 
 // Defina o tipo inferido do esquema de validação
-export type FetchCategoriesQuerySchema = z.infer<
-  typeof fetchCategoriesQuerySchema
->
+export type FetchProjectsQuerySchema = z.infer<typeof fetchProjectsQuerySchema>;
 
 // Implemente a validação
-export class ZodFetchCategoriesQuerySchemaValidation
-  implements Validation<FetchCategoriesQuerySchema>
+export class ZodFetchProjectsQuerySchemaValidation
+  implements Validation<FetchProjectsQuerySchema>
 {
   parse(input: object | undefined) {
-    return fetchCategoriesQuerySchema.parse(input)
+    return fetchProjectsQuerySchema.parse(input);
   }
 }

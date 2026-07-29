@@ -1,0 +1,78 @@
+import { z } from "zod";
+
+import type { Validation } from "@/core/validation/validation";
+
+const updateProjectBodySchema = z.object({
+  projectId: z
+    .string({
+      invalid_type_error: "Id do projeto inválido",
+      required_error: "Id do projeto é obrigatório",
+    })
+    .uuid({
+      message: "Id do projeto inválido",
+    }),
+  name: z
+    .string({
+      required_error: "Nome é obrigatório",
+      invalid_type_error: "Nome inválido",
+    })
+    .min(3, {
+      message: "O nome deve ter no mínimo 3 caracteres",
+    })
+    .max(255, {
+      message: "O nome deve ter no máximo 255 caracteres",
+    }),
+  icon: z
+    .string({
+      required_error: "Icone é obrigatório",
+      invalid_type_error: "Icone inválido",
+    })
+    .min(50, {
+      message: "O icone deve ter no mínimo 50 caracteres",
+    })
+    .max(50, {
+      message: "O icone deve ter no máximo 50 caracteres",
+    }),
+  color: z
+    .string({
+      required_error: "Cor é obrigatória",
+      invalid_type_error: "Cor inválida",
+    })
+    .min(20, {
+      message: "A cor deve ter no mínimo 20 caracteres",
+    })
+    .max(20, {
+      message: "A cor deve ter no máximo 20 caracteres",
+    }),
+  userId: z
+    .string({
+      invalid_type_error: "Id do usuário inválido",
+      required_error: "Id do usuário é obrigatório",
+    })
+    .uuid({
+      message: "Id do usuário inválido",
+    }),
+  description: z
+    .string({
+      required_error: "Descrição é obrigatória",
+      invalid_type_error: "Descrição inválida",
+    })
+    .min(10, {
+      message: "A descrição deve ter no mínimo 10 caracteres",
+    })
+    .max(255, {
+      message: "A descrição deve ter no máximo 255 caracteres",
+    }),
+});
+
+// Tipo inferido a partir do esquema Zod
+export type UpdateProjectBodySchema = z.infer<typeof updateProjectBodySchema>;
+
+// Implementação da validação utilizando o esquema Zod
+export class ZodUpdateProjectBodySchemaValidation
+  implements Validation<UpdateProjectBodySchema>
+{
+  parse(input: object | undefined) {
+    return updateProjectBodySchema.parse(input);
+  }
+}

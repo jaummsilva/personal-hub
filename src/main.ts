@@ -3,6 +3,7 @@ import { FastifyAdapter } from "./infra/http/fastify/fastify-adapter";
 import type { HttpServer } from "./infra/http/http-server";
 import { AuthRoutes } from "./infra/http/routes/auth/routes";
 import { CategoryRoutes } from "./infra/http/routes/category/routes";
+import { ProjectRoutes } from "./infra/http/routes/project/routes";
 import { UserRoutes } from "./infra/http/routes/user/routes";
 
 export default class App {
@@ -15,6 +16,7 @@ export default class App {
     await new UserRoutes(this.httpServer).init();
     await new AuthRoutes(this.httpServer).init();
     await new CategoryRoutes(this.httpServer).init();
+    await new ProjectRoutes(this.httpServer).init();
 
     this.httpServer.start(env.PORT, () => {
       console.log("HTTP Running!");

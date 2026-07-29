@@ -4,32 +4,34 @@ import type { Validation } from "@/core/validation/validation";
 import type { HttpResponse } from "@/infra/http/http-response";
 
 import type { HttpRequest } from "../../http-request";
-import { makeRegisterCategoriesUseCase } from "./factories/make-register-categories-use-case";
 import { UserNotExistsError } from "@/domain/application/errors/user/user-not-exists";
+import { makeRegisterProjectsUseCase } from './factories/make-register-projects-use-case';
 
-export class RegisterCategoryController {
+export class RegisterProjectController {
   constructor(
     private bodyValidation: Validation<{
       name: string;
       icon: string;
       color: string;
       userId: string;
+      description: string;
     }>,
   ) {}
 
   async handle(request: HttpRequest, reply: HttpResponse) {
     try {
-      const { name, color, icon, userId } = this.bodyValidation.parse(
+      const { name, color, icon, userId, description } = this.bodyValidation.parse(
         request.body,
       );
 
-      const registerCategoriesUseCase = makeRegisterCategoriesUseCase();
+      const registerProjectsUseCase = makeRegisterProjectsUseCase();
 
-      const result = await registerCategoriesUseCase.execute({
+      const result = await registerProjectsUseCase.execute({
         name,
         userId,
         icon,
         color,
+        description,
       });
 
       if (result.isLeft()) {
